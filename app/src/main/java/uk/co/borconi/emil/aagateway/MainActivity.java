@@ -8,10 +8,11 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.ToggleButton;
 
 
@@ -52,6 +53,19 @@ public class MainActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = preferences.edit()
                             .putBoolean(Preferences.IGNORE_IPV6, isChecked);
                     editor.commit();
+                }
+            });
+
+            TextView ipaddtext = findViewById(R.id.swIpAddr);
+            ipaddtext.setText(preferences.getString(Preferences.CONNECTION_ADDRESS, ""));
+            ipaddtext.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    String text = v.getText().toString();
+                    SharedPreferences.Editor editor = preferences.edit()
+                            .putString(Preferences.CONNECTION_ADDRESS, text);
+                    editor.commit();
+                    return true;
                 }
             });
 

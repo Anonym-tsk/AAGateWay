@@ -66,6 +66,7 @@ public class HackerService extends Service {
     private boolean localCompleted,usbCompleted;
     private boolean listening;
     private boolean ignoreipv6;
+    private String ipaddress;
     byte [] readbuffer=new byte[16384];
     private Thread tcpreader;
     private Thread usbreader;
@@ -87,6 +88,7 @@ public class HackerService extends Service {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         listening=preferences.getBoolean(Preferences.LISTENING_MODE, true);
         ignoreipv6=preferences.getBoolean(Preferences.IGNORE_IPV6, true);
+        ipaddress=preferences.getString(Preferences.CONNECTION_ADDRESS, "");
         String CHANNEL_ONE_ID = "uk.co.borconi.emil.aagateway";
         String CHANNEL_ONE_NAME = "Channel One";
         NotificationChannel notificationChannel = null;
@@ -175,7 +177,11 @@ public class HackerService extends Service {
                 }
                 //get the address of the clients connected to this hotspot
                 String[] command = {"ip", "neigh", "show", "dev", "wlan0"};
-                Process p = Runtime.getRuntime().exec(command);
+
+                // TODO: it temporary hack to fix ip address
+                String[] fakeCommand = {"echo", ipaddress, "REACHABLE"};
+
+                Process p = Runtime.getRuntime().exec(ipaddress.isEmpty() ? command : fakeCommand);
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(p.getInputStream()));
                 String line;
